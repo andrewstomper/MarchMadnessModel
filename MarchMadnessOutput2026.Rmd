@@ -53,16 +53,15 @@ and the popularity of other players in your group to pick those teams. The best 
 are not the ones that pick the teams that are most likely to win; it is the brackets
 that pick winners that are likely to win *and* are not picked in your competitors brackets.
 
-The optimal winners very based on group size. For a small group, the favorites may be good; however, 
+The optimal winners vary based on group size. For a small group, the favorites are good; however, 
 for very large groups (N > 250), more upsets help your chances at winning. **In no way am I guaranteeing a win, simply just increasing the chances of doing so.**
 
-In this years tournament #1 seeds are stronger than ever. Most of them as likely to make the 
-final four as not. As expected, favorites are popular among the public, but with especially strong
-one seeds, for most group sizes (N < 60), *chalk* may be the best approach this year. 
+In this years tournament #1 seeds are stronger than ever. Most of them are as likely to make the 
+final four as not. As expected, favorites are popular to pick for the public, but with especially strong
+one seeds this year, for most group sizes, *chalk* may be the best approach this year. 
 
 <!-- maybe change -->
-The optimal team to pick in small-to-medium sizes is **Michigan**. While Duke is the odds-on favorite, they have an implied 18.5% chance of winning compared to Michigan's 17.7% chance, nearly twice as many people are 
-picking Duke than Michigan, making Michigan a value pick.
+The optimal team to pick in small-to-medium sizes is **Michigan**. While Duke is the odds-on favorite, it is only slightly. They have an implied 18.5% chance of winning compared to Michigan's 17.7% chance. At the same time, nearly twice as many people are picking Duke to win it all than Michigan, making Michigan a value pick.
 
 The team to pick in larger group sizes is **Florida**. They also have a edge in expected win percentage
 compared to popularity, but are less likely to win (and be picked by others). In order to win in large groups, you need variance, so Florida gives you a better chance to stand out in a large group.
@@ -72,7 +71,7 @@ The following will walk through the process and results of the model for differe
 # Analysis {#Analysis}
 
 The best teams to pick are typically the teams that have a higher expected probability
-than 'popular' probability. Additionally, since the points scale exponetionally by round 
+than 'popular' probability. Additionally, since the points scale exponentially by round 
 (1 point for first round, 2 for second, 4 for third, etc.) it is more important to pick teams that are undervalued in the later rounds than the early rounds. For example, if a team has a 10% chance to make the final four but only 5% of Yahoo users are picking them to make the final four, that is more valuable than a team that has a 50% chance to make the sweet sixteen but 45% of Yahoo users are picking them to make the sweet sixteen.
 
 The lower-ranked 1 seeds (Michigan and Florida) appear to have relative value in this years bracket. 
@@ -95,7 +94,7 @@ larger group you may want the variance and therefore would take the edge over th
 # Data {#Data}
 
 There are two main sets of data. The *expected* data and the *popular* data. A few sources were considered 
-for the *expected* mainly the implied probability from sportsbooks. This can be done by converting the betting odds into a proability and de-vigging (removing the house edge) the odds for each team to make a certain round. The issue with this data is that the amount of vig may not be the same in each line (e.g. a longshot may have more vig as it represents a larger risk to the sportsbook). Additionally, getting this data is manual and tedious. This year, I made some manual adjustments to the odds for very high seeds (>13) to win it all in 
+for the *expected*, mainly the implied probability from sportsbooks. This can be done by converting the betting odds into a proability and de-vigging (removing the house edge) the odds for each team to make a certain round. The issue with this data is that the amount of vig may not be the same in each line (e.g. a longshot may have more vig as it represents a larger risk to the sportsbook). Additionally, getting this data is manual and tedious. This year, I made some manual adjustments to the odds for very high seeds (>13) to win it all in 
 order for the final implied probabilities to make sense.
 
 In the end, I still believe the implied proability for the top seeds may be muted slightly. For example, 
@@ -107,7 +106,7 @@ immpossibly tedious way - you have to fill out a hypothetical bracket and it wil
 popularity to go to the next round. Luckily Yahoo still offers the public free popularity data.
 
 Of course, the implicit assumption is that the competitors in your group pick like
-the average user at Yahoo. On the fringes that is unlikely. I would hope no one is picking 14-seed
+the average user at Yahoo. On the fringes that is unlikely. Especially if they are putting money behind it, I would hope no one is picking 14-seed
 UPenn to win it all like 0.2% of Yahoo users. 
 
 The data is structured as the probability that each team makes it to each round. 
@@ -241,15 +240,14 @@ simualtions. The distribution of the group brackets is based on the popular pick
 The brackets in those groups are graded and the necessary amount of points to win is determined. 
 
 Next, 1,000 brackets are created sampling from the expected probabilities. They are graded
-based on each of the 10,000 outcomes/groups and we see how many each bracket wins. 
+based on each of the 10,000 outcomes/groups and we see how many groups each bracket wins. 
 
 The top 25% of brackets are determined. The sampling for the next 1,000 testing brackets
 will be sampled from a weighted distribution of the initial expected probabilities and the distribution of the best brackets from the prior iteration. This a process known as **Genetic Sampling**. I used up to 10 interations, but cut it off if a bracket won 3 times in a row. 
 
 The top 5% of brackets are rolled over to the next round of simulation to test against a new set of outcomes. 
 
-The next round of simulation begins by creating 10,000 new outcomes. The groups are 
-preserved to save computing power, but they are regraded on the new outcomes. 
+The next round of simulation begins by creating 10,000 new outcomes. 
 
 
 # Results (Group Size = 5)
@@ -519,7 +517,7 @@ filled_bracket
 
 # Results (Group Size = 20)
 
-For a slightly larger group the results would still be considered chalky. The bracket is pretty similar to the 5 person bracket.
+For a slightly larger group the results would still be considered chalky. The bracket is pretty similar to the 5 person bracket.Though now at least one 3 seed makes the elite eight. 
 
 The expected value of a random bracket is 5%. Using this bracket it is ~12%. For a $20 buy in the expected value goes from $0 to $28.
 
@@ -783,7 +781,7 @@ filled_bracket
 
 # Results (Group Size = 50)
 
-For a now larger group size, Florida becomes the optimal winner to pick. Just like Michigan, Florida is undervalued compared to the other top teams. In this larger group, though, you need more variance to be the #1 bracket, therefore the less-likely-to-win team, Florida, is better than Michigan. 
+For a now larger group size, Florida becomes the optimal winner to pick. Just like Michigan, Florida is undervalued compared to the other top teams. In this larger group, though, you need more variance to be the #1 bracket, therefore the less-likely-to-win team, Florida, is better than Michigan. Notice there are still not a ton of upsets. The upsets in this optimal bracket are where they matter - the semifinals and finals.
 
 The expected value of a random bracket is 2%. Using this bracket it is ~5.9%. For a $20 buy in the expected value goes from $0 to $39.
 
