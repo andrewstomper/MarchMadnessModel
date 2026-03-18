@@ -61,11 +61,36 @@ final four as not. As expected, favorites are popular among the public, but with
 one seeds, for most group sizes (N < 60), *chalk* may be the best approach this year. 
 
 <!-- maybe change -->
-In almost every bracket size the ideal winner is **Houston**. The Cougars have a 15.4% chance 
-to win the tournament but only 8.6% of Yahoo users are picking them. 
+The optimal team to pick in small-to-medium sizes is **Michigan**. While Duke is the odds-on favorite, they have an implied 18.5% chance of winning compared to Michigan's 17.7% chance, nearly twice as many people are 
+picking Duke than Michigan, making Michigan a value pick.
 
+The team to pick in larger group sizes is **Florida**. They also have a edge in expected win percentage
+compared to popularity, but are less likely to win (and be picked by others). In order to win in large groups, you need variance, so Florida gives you a better chance to stand out in a large group.
 
 The following will walk through the process and results of the model for different group sizes. 
+
+# Analysis {#Analysis}
+
+The best teams to pick are typically the teams that have a higher expected probability
+than 'popular' probability. Additionally, since the points scale exponetionally by round 
+(1 point for first round, 2 for second, 4 for third, etc.) it is more important to pick teams that are undervalued in the later rounds than the early rounds. For example, if a team has a 10% chance to make the final four but only 5% of Yahoo users are picking them to make the final four, that is more valuable than a team that has a 50% chance to make the sweet sixteen but 45% of Yahoo users are picking them to make the sweet sixteen.
+
+The lower-ranked 1 seeds (Michigan and Florida) appear to have relative value in this years bracket. 
+While both teams are overvalued to make the final four (61.2% of brackets picked Michigan to come out of the 
+Midwest region compared to an implied probability of 48%), they are undervalued to make and win the championship, which holds more weight. 
+
+This year, double digit seeds are not expected to do well. In fact, the 1st round spreads
+are some of the largest ever seen. While some have recognized this and adjusted brackets accordingly, 
+many still like to pick upsets regardless of how likely they are to happen. This leads the model 
+to like a relatively chalky bracket even in somewhat larger group sizes. 
+
+The other thing to consider is that even if there is an 'edge' by picking an underdog to 
+go to the sweet sixteen or further it may not be worth it. The goal is the find the optimal mean-variance
+tradeoff of your bracket. Picking all the teams that are expected to win will maximize the expected value
+of you bracket, but it will also minimize the variance. This is good for a small group. This means that
+even if Michigan State only has a 53% chance of making the sweet sixteen and 77% of Yahoo users picked them 
+to win at least two games, it is not worth picking Louisville or USF because you don't need the variance. In a 
+larger group you may want the variance and therefore would take the edge over the popular pick. 
 
 # Data {#Data}
 
@@ -73,7 +98,11 @@ There are two main sets of data. The *expected* data and the *popular* data. A f
 for the *expected* mainly the implied probability from sportsbooks. This can be done by converting the betting odds into a proability and de-vigging (removing the house edge) the odds for each team to make a certain round. The issue with this data is that the amount of vig may not be the same in each line (e.g. a longshot may have more vig as it represents a larger risk to the sportsbook). Additionally, getting this data is manual and tedious. This year, I made some manual adjustments to the odds for very high seeds (>13) to win it all in 
 order for the final implied probabilities to make sense.
 
-For the popular pick data, until 2023, ESPN would offer *Who Picked Whom* data, but unfortunatley Disney had to kill it. CBS also offers it, but in the most
+In the end, I still believe the implied proability for the top seeds may be muted slightly. For example, 
+Duke is -135 to make the final four which implies a 57.4% chance, but after removing the total vig across all 
+16 teams that could make it, that implied probabilty drops to 48.5%. This disproportionately affects better seeded teams. Still, the model loves one seeds so this does not concern me too much.
+
+For the popular pick data, until 2023, ESPN would offer *Who Picked Whom* data, but unfortunately Disney had to kill it. CBS also offers it, but in the most
 immpossibly tedious way - you have to fill out a hypothetical bracket and it will tell you each teams
 popularity to go to the next round. Luckily Yahoo still offers the public free popularity data.
 
@@ -97,10 +126,10 @@ Below is the popular data compared to expected data, by round.
 
 ```{r data1, echo=FALSE, include=TRUE}
 
-expected <- fread("data/dk_26.csv")
+expected <- fread("data/dk_26.csv")[, Region := ifelse(ff_grp == 'E', "East", ifelse(ff_grp == 'S', "South", ifelse(ff_grp == 'W', "West", "Midwest")))]
 popular <- fread("data/yahoo_wpw.csv")
 
-output_1 <- expected[, .(Seed, Team, Expected = six)][popular, Popular := i.six, on = .(Team)][order(Expected, decreasing = TRUE)][, `Value Over Popular` := Expected - Popular]
+output_1 <- expected[, .(Seed, Team, Region, Expected = six)][popular, Popular := i.six, on = .(Team)][order(Expected, decreasing = TRUE)][, `Value Over Popular` := Expected - Popular]
 
 DT::datatable(
   output_1, 
@@ -121,10 +150,10 @@ Probability to make the championship - Win or Lose
 
 ```{r data2, echo=FALSE, include=TRUE}
 
-expected <- fread("data/dk_26.csv")
+expected <- fread("data/dk_26.csv")[, Region := ifelse(ff_grp == 'E', "East", ifelse(ff_grp == 'S', "South", ifelse(ff_grp == 'W', "West", "Midwest")))]
 popular <- fread("data/yahoo_wpw.csv")
 
-output_2 <- expected[, .(Seed, Team, Expected = five)][popular, Popular := i.five, on = .(Team)][order(Expected, decreasing = TRUE)][, `Value Over Popular` := Expected - Popular]
+output_2 <- expected[, .(Seed, Team, Region, Expected = five)][popular, Popular := i.five, on = .(Team)][order(Expected, decreasing = TRUE)][, `Value Over Popular` := Expected - Popular]
 
 DT::datatable(
   output_2, 
@@ -142,10 +171,10 @@ DT::datatable(
 ### Final Four
 ```{r data3, echo=FALSE, include=TRUE}
 
-expected <- fread("data/dk_26.csv")
+expected <- fread("data/dk_26.csv")[, Region := ifelse(ff_grp == 'E', "East", ifelse(ff_grp == 'S', "South", ifelse(ff_grp == 'W', "West", "Midwest")))]
 popular <- fread("data/yahoo_wpw.csv")
 
-output_3 <- expected[, .(Seed, Team, Expected = four)][popular, Popular := i.four, on = .(Team)][order(Expected, decreasing = TRUE)][, `Value Over Popular` := Expected - Popular]
+output_3 <- expected[, .(Seed, Team, Region, Expected = four)][popular, Popular := i.four, on = .(Team)][order(Expected, decreasing = TRUE)][, `Value Over Popular` := Expected - Popular]
 
 DT::datatable(
   output_3, 
@@ -163,10 +192,10 @@ DT::datatable(
 ### Elite Eight
 ```{r data4, echo=FALSE, include=TRUE}
 
-expected <- fread("data/dk_26.csv")
+expected <- fread("data/dk_26.csv")[, Region := ifelse(ff_grp == 'E', "East", ifelse(ff_grp == 'S', "South", ifelse(ff_grp == 'W', "West", "Midwest")))]
 popular <- fread("data/yahoo_wpw.csv")
 
-output_4 <- expected[, .(Seed, Team, Expected = three)][popular, Popular := i.three, on = .(Team)][order(Expected, decreasing = TRUE)][, `Value Over Popular` := Expected - Popular]
+output_4 <- expected[, .(Seed, Team, Region, Expected = three)][popular, Popular := i.three, on = .(Team)][order(Expected, decreasing = TRUE)][, `Value Over Popular` := Expected - Popular]
 
 DT::datatable(
   output_4, 
@@ -184,10 +213,10 @@ DT::datatable(
 ### Sweet Sixteen
 ```{r data5, echo=FALSE, include=TRUE}
 
-expected <- fread("data/dk_26.csv")
+expected <- fread("data/dk_26.csv")[, Region := ifelse(ff_grp == 'E', "East", ifelse(ff_grp == 'S', "South", ifelse(ff_grp == 'W', "West", "Midwest")))]
 popular <- fread("data/yahoo_wpw.csv")
 
-output_5 <- expected[, .(Seed, Team, Expected = two)][popular, Popular := i.two, on = .(Team)][order(Expected, decreasing = TRUE)][, `Value Over Popular` := Expected - Popular]
+output_5 <- expected[, .(Seed, Team, Region, Expected = two)][popular, Popular := i.two, on = .(Team)][order(Expected, decreasing = TRUE)][, `Value Over Popular` := Expected - Popular]
 
 DT::datatable(
   output_5, 
@@ -215,8 +244,7 @@ Next, 1,000 brackets are created sampling from the expected probabilities. They 
 based on each of the 10,000 outcomes/groups and we see how many each bracket wins. 
 
 The top 25% of brackets are determined. The sampling for the next 1,000 testing brackets
-will be sampled from a weighted distribution of the initial expected probabilities and the distribution of the best brackets from the prior iteration. This a process known as **Genetic Sampling**. I used 20 iterations, but in the N=20 example, the model 
-converged (one bracket won 3 times in a row) after 7 iterations.
+will be sampled from a weighted distribution of the initial expected probabilities and the distribution of the best brackets from the prior iteration. This a process known as **Genetic Sampling**. I used up to 10 interations, but cut it off if a bracket won 3 times in a row. 
 
 The top 5% of brackets are rolled over to the next round of simulation to test against a new set of outcomes. 
 
@@ -224,17 +252,20 @@ The next round of simulation begins by creating 10,000 new outcomes. The groups 
 preserved to save computing power, but they are regraded on the new outcomes. 
 
 
-# Results (Group Size = 20)
+# Results (Group Size = 5)
 
-For a relativley small group of 20 the optimal bracket is quite chalky. As mentioned in the Intro, Houston is the optimal winner in basically any size bracket that I have the ability to simulate. 
+For a very small group of 5 the optimal bracket is basically all chalk up until the final four. As mentioned in the Intro, Michigan is the best pick in this group size. They are expected to win 17.7% of the time but only 14.3% of Yahoo users are picking them to win, making them a value pick. In a small group you do not need a lot of variance.
 
-The expected value of a random bracket in a 20 person pool is 5%. Using this bracket the expected win percentage is ~12%. That means for a $20 buy your expected winnings increases from $0 to $28! That should hopefully cover the $5 I had to pay to Evan Miya for the data. 
+The expected value of a random bracket in a 5 person pool is 20%. Using this bracket the expected win percentage is ~35.6%. That means for a $20 buy your expected winnings increases from $0 to $15.6! 
 
-Also, yes, the names on the brackets get cut off and are abbreviated weirdly. Consider that on the list of improvements for 2026.
 
 ```{r results_20, echo=FALSE, include=TRUE, R.options = list(width = 240)}
 
-best_bracket <- fread('outputs/best_bracket_20.csv')
+best_bracket <- fread('outputs/best_bracket_5.csv')
+
+expected <- fread("data/dk_26.csv")
+best_bracket[expected, TeamCln := `i.Team Clean`, on = .(Team)]
+best_bracket[, Team := TeamCln]
 
 first_evens <- function(x) {seq(from=2,to=2*x,length.out=x)}
 first_odds <- function(x) {seq(from=1,to=2*x-1,length.out=x)}
@@ -316,17 +347,17 @@ Labels_og <- c("Duke",
                "Siena",
                "OSU",
                "TCU",
-               "St John's",
-               "Northern Iowa",
+               "StJohns",
+               "Northern IA",
                "Kansas",
-               "CA Baptist",
+               "CABaptist",
                "Louisville",
                "USF",
                "MSU",
                "NDSU",
                "UCLA",
                "UCF",
-               "UConn",
+               "Uconn",
                "Furman"
 )
 Labels <- Labels_og
@@ -359,11 +390,11 @@ Labels_og <- c("Florida",
                "UNC",
                "VCU",
                "Illinois",
-               "Penn",
-               "St Mary's",
+               "UPenn",
+               "SaintMarys",
                "TAMU",
                "Houston",
-               'Idaho'
+               "Idaho"
 )
 Labels <- Labels_og
 vec <- best_bracket[round == 1 & grp %like% 'S', Team]
@@ -386,22 +417,21 @@ filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xma
 
 ### put some test labels on the bracket slots
 Labels_og <- c("Arizona",
-               "Long Island",
+               "LongIsland",
                "Villanova",
-               "Utah St",
-               "Wisco",
-               "High Point",
+               "UtahSt",
+               "Wisconsin",
+               "HighPoint",
                "Arkansas",
                "Hawaii",
                "BYU",
                "Texas",
                "Gonzaga",
-               "Kenn St",
-               "Miami FL",
+               "KennesawSt",
+               "MiamiFL",
                "Missouri",
                "Purdue",
                "Queens"
-               
 )
 Labels <- Labels_og
 vec <- best_bracket[round == 1 & grp %like% 'W', Team]
@@ -431,15 +461,277 @@ Labels_og <- c("Michigan",
                "Alabama",
                "Hofstra",
                "Tennessee",
-               "SMU/Miami OH",
+               "SMU/MOH",
                "Virginia",
-               "Wright St",
+               "WrightSt",
                "Kentucky",
-               "Santa Clara",
-               "Iowa St",
-               'Tenn St'
-               
-               
+               "SantaClara",
+               "ISU",
+               "TennSt"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+TextFrame <- data.frame(X = -c(rep(r1.x[2], 16), rep(r2.x[2], 8), rep(r3.x[2], 4), rep(r4.x[2], 2), rep(r5.x[2], 1)), Y = -c(r1.y, r2.y, r3.y, r4.y, r5.y), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+
+#Left Semi
+semi_1 <- best_bracket[round == 5 & grp == 1, Team]
+
+TextFrame <- data.frame(X = r6.x[1], Y = r6.y, LAB = semi_1)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+#Right Semi
+semi_2 <- best_bracket[round == 5 & grp == 2, Team]
+
+TextFrame <- data.frame(X = -r6.x[2], Y = -r6.y, LAB = semi_2)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+#Final
+champ <- best_bracket[round == 6, Team]
+
+TextFrame <- data.frame(X = 0, Y = 0, LAB = champ)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0.5,vjust=-.2)
+
+filled_bracket
+
+```
+
+# Results (Group Size = 20)
+
+For a slightly larger group the results would still be considered chalky. The bracket is pretty similar to the 5 person bracket.
+
+The expected value of a random bracket is 5%. Using this bracket it is ~12%. For a $20 buy in the expected value goes from $0 to $28.
+
+```{r results_60, echo=FALSE, include=TRUE, R.options = list(width = 240)}
+
+best_bracket <- fread('outputs/best_bracket_20.csv')
+
+expected <- fread("data/dk_26.csv")
+best_bracket[expected, TeamCln := `i.Team Clean`, on = .(Team)]
+best_bracket[, Team := TeamCln]
+
+first_evens <- function(x) {seq(from=2,to=2*x,length.out=x)}
+first_odds <- function(x) {seq(from=1,to=2*x-1,length.out=x)}
+
+### calculate y-values for horizontal lines:
+### this is for top-left corner of the bracket,
+### but multiplying sequences by -1 makes these 
+### values work for bottom right and left corners;
+### final round has teams at y=2*off.set
+
+r1.y.width <- 1.5*strheight(s="Virginia Common",units="in") # this effects the width of the first round
+r1.y.offset <- 0.125*r1.y.width # this effects distance from y=0
+
+r1.y <- seq(from=r1.y.offset,to=r1.y.offset+r1.y.width,length.out=16)
+r2.y <- seq(from=mean(r1.y[1:2]),to=mean(r1.y[15:16]),length.out=8)
+r3.y <- seq(from=mean(r2.y[1:2]),to=mean(r2.y[7:8]),length.out=4)
+r4.y <- seq(from=mean(r3.y[1:2]),to=mean(r3.y[3:4]),length.out=2)
+r5.y <- seq(from=mean(r4.y[1:2]),to=mean(r4.y[1:2]),length.out=1)
+r6.y <- 1.5*r1.y.offset
+
+### calculate horizontal bar start and stop coordinates
+### note that there are 6 total rounds -- 5 rounds per quadrant
+r1.x.width <- 1.25*strwidth("Viriginia Commonwealth","inches") # how long should horizontal lines be?
+r1.x.offset <- 1
+round.break.points <- -(seq(from=0,to=7*r1.x.width,by=r1.x.width)+r1.x.offset)
+
+r1.x <- round.break.points[7:6]
+r2.x <- round.break.points[6:5]
+r3.x <- round.break.points[5:4]
+r4.x <- round.break.points[4:3]
+r5.x <- round.break.points[3:2]
+r6.x <- round.break.points[2:1]
+
+### calculate verticals line coordinates: these are based off of
+### r1.y values. Round 5 verticals need to connect the four subtrees
+### via the top-left <-> bottom-left and top-right <-> bottom-right
+
+r1.verticals.start <- r1.y[first_odds(8)]
+r1.verticals.stop <- r1.y[first_evens(8)]
+
+r2.verticals.start <- r2.y[first_odds(4)]
+r2.verticals.stop <- r2.y[first_evens(4)]
+
+r3.verticals.start <- r3.y[first_odds(2)]
+r3.verticals.stop <- r3.y[first_evens(2)]
+
+r4.verticals.start <- r4.y[first_odds(1)]
+r4.verticals.stop <- r4.y[first_evens(1)]
+
+r5.verticals.start <- r5.y[1]
+r5.verticals.stop <- -r5.y[1]
+
+empty.bracket <- ggplot() + theme_bw() + theme(axis.line=element_blank(), axis.text.x=element_blank(), axis.text.y=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), axis.title.y=element_blank(), panel.border=element_blank(), panel.grid.major.x=element_blank(), panel.grid.minor.x=element_blank(), panel.grid.major.y=element_blank(), panel.grid.minor.y=element_blank(), plot.margin=unit(c(0,0,-6,-6),"mm"), text=element_text(size=12,hjust=0,vjust=0)) + coord_cartesian(ylim = c(-1.05*r1.y[16],1.05*r1.y[16]), xlim = c(1.025*r1.x[1],-1.025*r1.x[1]))
+
+### add first round bars, and vertical connectors, make addition of each quadrant verbose
+empty.bracket <- empty.bracket + geom_segment(aes(x=r1.x[1],y=r1.y,yend=r1.y,xend=r1.x[2])) + geom_segment(aes(x=r1.x[2],xend=r1.x[2],y=r1.verticals.start,yend=r1.verticals.stop)) + geom_segment(aes(x=r1.x[1],y=-r1.y,yend=-r1.y,xend=r1.x[2])) + geom_segment(aes(x=r1.x[2],xend=r1.x[2],y=-r1.verticals.start,yend=-r1.verticals.stop)) + geom_segment(aes(x=-r1.x[1],y=r1.y,yend=r1.y,xend=-r1.x[2])) + geom_segment(aes(x=-r1.x[2],xend=-r1.x[2],y=r1.verticals.start,yend=r1.verticals.stop)) + geom_segment(aes(x=-r1.x[1],y=-r1.y,yend=-r1.y,xend=-r1.x[2])) + geom_segment(aes(x=-r1.x[2],xend=-r1.x[2],y=-r1.verticals.start,yend=-r1.verticals.stop)) 
+
+### add second round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r2.x[1],y=r2.y,yend=r2.y,xend=r2.x[2])) + geom_segment(aes(x=r2.x[2],xend=r2.x[2],y=r2.verticals.start,yend=r2.verticals.stop)) + geom_segment(aes(x=r2.x[1],y=-r2.y,yend=-r2.y,xend=r2.x[2])) + geom_segment(aes(x=r2.x[2],xend=r2.x[2],y=-r2.verticals.start,yend=-r2.verticals.stop)) + geom_segment(aes(x=-r2.x[1],y=r2.y,yend=r2.y,xend=-r2.x[2])) + geom_segment(aes(x=-r2.x[2],xend=-r2.x[2],y=r2.verticals.start,yend=r2.verticals.stop)) + geom_segment(aes(x=-r2.x[1],y=-r2.y,yend=-r2.y,xend=-r2.x[2])) + geom_segment(aes(x=-r2.x[2],xend=-r2.x[2],y=-r2.verticals.start,yend=-r2.verticals.stop)) 
+
+### add third round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r3.x[1],y=r3.y,yend=r3.y,xend=r3.x[2])) + geom_segment(aes(x=r3.x[2],xend=r3.x[2],y=r3.verticals.start,yend=r3.verticals.stop)) + geom_segment(aes(x=r3.x[1],y=-r3.y,yend=-r3.y,xend=r3.x[2])) + geom_segment(aes(x=r3.x[2],xend=r3.x[2],y=-r3.verticals.start,yend=-r3.verticals.stop)) + geom_segment(aes(x=-r3.x[1],y=r3.y,yend=r3.y,xend=-r3.x[2])) + geom_segment(aes(x=-r3.x[2],xend=-r3.x[2],y=r3.verticals.start,yend=r3.verticals.stop)) + geom_segment(aes(x=-r3.x[1],y=-r3.y,yend=-r3.y,xend=-r3.x[2])) + geom_segment(aes(x=-r3.x[2],xend=-r3.x[2],y=-r3.verticals.start,yend=-r3.verticals.stop)) 
+
+### add fourth round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r4.x[1],y=r4.y,yend=r4.y,xend=r4.x[2])) + geom_segment(aes(x=r4.x[2],xend=r4.x[2],y=r4.verticals.start,yend=r4.verticals.stop)) + geom_segment(aes(x=r4.x[1],y=-r4.y,yend=-r4.y,xend=r4.x[2])) + geom_segment(aes(x=r4.x[2],xend=r4.x[2],y=-r4.verticals.start,yend=-r4.verticals.stop)) + geom_segment(aes(x=-r4.x[1],y=r4.y,yend=r4.y,xend=-r4.x[2])) + geom_segment(aes(x=-r4.x[2],xend=-r4.x[2],y=r4.verticals.start,yend=r4.verticals.stop)) + geom_segment(aes(x=-r4.x[1],y=-r4.y,yend=-r4.y,xend=-r4.x[2])) + geom_segment(aes(x=-r4.x[2],xend=-r4.x[2],y=-r4.verticals.start,yend=-r4.verticals.stop)) 
+
+### add fifth round: add necessary horizontal bars and then
+### vertical bars
+empty.bracket <- empty.bracket + geom_segment(aes(x=r5.x[1],y=r5.y,yend=r5.y,xend=r5.x[2])) +  geom_segment(aes(x=r5.x[1],y=-r5.y,yend=-r5.y,xend=r5.x[2])) + geom_segment(aes(x=r5.x[2],y=-r5.y, yend=r5.y, xend=r5.x[2])) + geom_segment(aes(x=-r5.x[1],y=r5.y,yend=r5.y,xend=-r5.x[2])) + geom_segment(aes(x=-r5.x[1],y=-r5.y,yend=-r5.y,xend=-r5.x[2])) + geom_segment(aes(x=-r5.x[2],y=-r5.y,yend=r5.y,xend=-r5.x[2])) 
+
+### due to symmetry, the 6th (and final round)
+empty.bracket <- empty.bracket  + geom_segment(aes(x=r6.x[1],y=r6.y,xend=r6.x[2],yend=r6.y)) + geom_segment(aes(x=-r6.x[1],y=-r6.y,xend=-r6.x[2],yend=-r6.y))
+
+### add winner location
+empty.bracket <- empty.bracket + geom_segment(aes(x=mean(r6.x),xend=-mean(r6.x),y=0,yend=0))
+
+### put some test labels on the bracket slots
+Labels_og <- c("Duke",
+               "Siena",
+               "OSU",
+               "TCU",
+               "StJohns",
+               "Northern IA",
+               "Kansas",
+               "CABaptist",
+               "Louisville",
+               "USF",
+               "MSU",
+               "NDSU",
+               "UCLA",
+               "UCF",
+               "Uconn",
+               "Furman"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+
+
+TextFrame <- data.frame(X = c(rep(r1.x[1], 16), rep(r2.x[1], 8), rep(r3.x[1], 4), rep(r4.x[1], 2), rep(r5.x[1], 1)), Y = c(rev(r1.y), rev(r2.y), rev(r3.y), rev(r4.y), rev(r5.y)), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- empty.bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=-.05,vjust=-.2)
+
+### put some test labels on the bracket slots
+Labels_og <- c("Florida",
+               "Lehigh/PV",
+               "Clemson",
+               "Iowa",
+               "Vandy",
+               "McNeese",
+               "Nebraska",
+               "Troy",
+               "UNC",
+               "VCU",
+               "Illinois",
+               "UPenn",
+               "SaintMarys",
+               "TAMU",
+               "Houston",
+               "Idaho"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+TextFrame <- data.frame(X = c(rep(r1.x[1], 16), rep(r2.x[1], 8), rep(r3.x[1], 4), rep(r4.x[1], 2), rep(r5.x[1], 1)), Y = -c(r1.y, r2.y, r3.y, r4.y, r5.y), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=-.05,vjust=-.2)
+
+
+#Top Left
+
+### put some test labels on the bracket slots
+Labels_og <- c("Arizona",
+               "LongIsland",
+               "Villanova",
+               "UtahSt",
+               "Wisconsin",
+               "HighPoint",
+               "Arkansas",
+               "Hawaii",
+               "BYU",
+               "Texas",
+               "Gonzaga",
+               "KennesawSt",
+               "MiamiFL",
+               "Missouri",
+               "Purdue",
+               "Queens"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+TextFrame <- data.frame(X = -c(rep(r1.x[2], 16), rep(r2.x[2], 8), rep(r3.x[2], 4), rep(r4.x[2], 2), rep(r5.x[2], 1)), Y = c(rev(r1.y), rev(r2.y), rev(r3.y), rev(r4.y), rev(r5.y)), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+#Bottom Right
+
+### put some test labels on the bracket slots
+Labels_og <- c("Michigan",
+               "Howard",
+               "Georgia",
+               "SLU",
+               "TTU",
+               "Akron",
+               "Alabama",
+               "Hofstra",
+               "Tennessee",
+               "SMU/MOH",
+               "Virginia",
+               "WrightSt",
+               "Kentucky",
+               "SantaClara",
+               "ISU",
+               "TennSt"
 )
 Labels <- Labels_og
 vec <- best_bracket[round == 1 & grp %like% 'M', Team]
@@ -491,14 +783,17 @@ filled_bracket
 
 # Results (Group Size = 50)
 
-For a slightly larger group the results would still be considered chalky. However, we finally have two upsets in the Elite Eight and 
-a non-one seed to the Final Four. Strangely, some of the upsets from the 20 person bracket did not make it to the 550 person bracket like VCU to the Sweet Sixteen.
+For a now larger group size, Florida becomes the optimal winner to pick. Just like Michigan, Florida is undervalued compared to the other top teams. In this larger group, though, you need more variance to be the #1 bracket, therefore the less-likely-to-win team, Florida, is better than Michigan. 
 
-The expected value of a random bracket is 1.3%. Using this bracket it is 4.8%. For a $20 buy in the expected value goes from $0 to $52.
+The expected value of a random bracket is 2%. Using this bracket it is ~5.9%. For a $20 buy in the expected value goes from $0 to $39.
 
-```{r results_60, echo=FALSE, include=TRUE, R.options = list(width = 240)}
+```{r results_50, echo=FALSE, include=TRUE, R.options = list(width = 240)}
 
 best_bracket <- fread('outputs/best_bracket_50.csv')
+
+expected <- fread("data/dk_26.csv")
+best_bracket[expected, TeamCln := `i.Team Clean`, on = .(Team)]
+best_bracket[, Team := TeamCln]
 
 first_evens <- function(x) {seq(from=2,to=2*x,length.out=x)}
 first_odds <- function(x) {seq(from=1,to=2*x-1,length.out=x)}
@@ -580,17 +875,17 @@ Labels_og <- c("Duke",
                "Siena",
                "OSU",
                "TCU",
-               "St John's",
-               "Northern Iowa",
+               "StJohns",
+               "Northern IA",
                "Kansas",
-               "CA Baptist",
+               "CABaptist",
                "Louisville",
                "USF",
                "MSU",
                "NDSU",
                "UCLA",
                "UCF",
-               "UConn",
+               "Uconn",
                "Furman"
 )
 Labels <- Labels_og
@@ -623,11 +918,11 @@ Labels_og <- c("Florida",
                "UNC",
                "VCU",
                "Illinois",
-               "Penn",
-               "St Mary's",
+               "UPenn",
+               "SaintMarys",
                "TAMU",
                "Houston",
-               'Idaho'
+               "Idaho"
 )
 Labels <- Labels_og
 vec <- best_bracket[round == 1 & grp %like% 'S', Team]
@@ -650,22 +945,21 @@ filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xma
 
 ### put some test labels on the bracket slots
 Labels_og <- c("Arizona",
-               "Long Island",
+               "LongIsland",
                "Villanova",
-               "Utah St",
-               "Wisco",
-               "High Point",
+               "UtahSt",
+               "Wisconsin",
+               "HighPoint",
                "Arkansas",
                "Hawaii",
                "BYU",
                "Texas",
                "Gonzaga",
-               "Kenn St",
-               "Miami FL",
+               "KennesawSt",
+               "MiamiFL",
                "Missouri",
                "Purdue",
                "Queens"
-               
 )
 Labels <- Labels_og
 vec <- best_bracket[round == 1 & grp %like% 'W', Team]
@@ -695,15 +989,13 @@ Labels_og <- c("Michigan",
                "Alabama",
                "Hofstra",
                "Tennessee",
-               "SMU/Miami OH",
+               "SMU/MOH",
                "Virginia",
-               "Wright St",
+               "WrightSt",
                "Kentucky",
-               "Santa Clara",
-               "Iowa St",
-               'Tenn St'
-               
-               
+               "SantaClara",
+               "ISU",
+               "TennSt"
 )
 Labels <- Labels_og
 vec <- best_bracket[round == 1 & grp %like% 'M', Team]
@@ -752,8 +1044,6 @@ filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xma
 filled_bracket
 
 ```
-
-
 
 
 
