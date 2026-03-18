@@ -1,64 +1,64 @@
 round,Team,competitor,grp,type
-1,TCU,4491,E8,winner
-1,Kansas,4491,E4,winner
-1,Louisville,4491,E6,winner
-1,Connecticut,4491,E2,winner
-1,Iowa,4491,S8,winner
-1,Vanderbilt,4491,S5,winner
-1,North Carolina,4491,S6,winner
-1,Texas A&M,4491,S7,winner
-1,Utah State,4491,W8,winner
-1,Wisconsin,4491,W5,winner
-1,BYU,4491,W6,winner
-1,Missouri,4491,W7,winner
-1,Georgia,4491,M8,winner
-1,Texas Tech,4491,M5,winner
-1,Virginia,4491,M3,winner
-1,Kentucky,4491,M7,winner
-1,St. John's,4491,E5,winner
-1,UCLA,4491,E7,winner
-1,Nebraska,4491,S4,winner
-1,Illinois*,4491,S3,winner
-1,Arkansas,4491,W4,winner
-1,Gonzaga,4491,W3,winner
-1,Alabama,4491,M4,winner
-1,Tennessee,4491,M6,winner
-1,Michigan State,4491,E3,winner
-1,Florida,4491,S1,winner
-1,Purdue,4491,W2,winner
-1,Iowa State,4491,M2,winner
-1,Houston,4491,S2,winner
-1,Arizona,4491,W1,winner
-1,Duke,4491,E1,winner
-1,Michigan,4491,M1,winner
-2,St. John's,4491,E4,winner
-2,UCLA,4491,E2,winner
-2,Nebraska,4491,S4,winner
-2,Illinois*,4491,S3,winner
-2,Arkansas,4491,W4,winner
-2,Gonzaga,4491,W3,winner
-2,Alabama,4491,M4,winner
-2,Tennessee,4491,M3,winner
-2,Michigan State,4491,E3,winner
-2,Florida,4491,S1,winner
-2,Purdue,4491,W2,winner
-2,Iowa State,4491,M2,winner
-2,Houston,4491,S2,winner
-2,Arizona,4491,W1,winner
-2,Duke,4491,E1,winner
-2,Michigan,4491,M1,winner
-3,Michigan State,4491,E2,winner
-3,Florida,4491,S1,winner
-3,Purdue,4491,W2,winner
-3,Iowa State,4491,M2,winner
-3,Houston,4491,S2,winner
-3,Arizona,4491,W1,winner
-3,Duke,4491,E1,winner
-3,Michigan,4491,M1,winner
-4,Houston,4491,S,winner
-4,Arizona,4491,W,winner
-4,Duke,4491,E,winner
-4,Michigan,4491,M,winner
-5,Duke,4491,1,winner
-5,Michigan,4491,2,winner
-6,Michigan,4491,final,winner
+1,TCU,3371,E8,winner
+1,St. John's,3371,E5,winner
+1,Louisville,3371,E6,winner
+1,Connecticut,3371,E2,winner
+1,Clemson,3371,S8,winner
+1,Nebraska,3371,S4,winner
+1,North Carolina,3371,S6,winner
+1,Saint Mary's,3371,S7,winner
+1,Villanova,3371,W8,winner
+1,High Point,3371,W5,winner
+1,BYU,3371,W6,winner
+1,Missouri,3371,W7,winner
+1,Georgia,3371,M8,winner
+1,Texas Tech,3371,M5,winner
+1,SMU*,3371,M6,winner
+1,Kentucky,3371,M7,winner
+1,Kansas,3371,E4,winner
+1,UCLA,3371,E7,winner
+1,Vanderbilt,3371,S5,winner
+1,Houston,3371,S2,winner
+1,Arkansas,3371,W4,winner
+1,Purdue,3371,W2,winner
+1,Alabama,3371,M4,winner
+1,Virginia,3371,M3,winner
+1,Michigan State,3371,E3,winner
+1,Illinois*,3371,S3,winner
+1,Gonzaga,3371,W3,winner
+1,Iowa State,3371,M2,winner
+1,Duke,3371,E1,winner
+1,Arizona,3371,W1,winner
+1,Florida,3371,S1,winner
+1,Michigan,3371,M1,winner
+2,Kansas,3371,E4,winner
+2,UCLA,3371,E2,winner
+2,Vanderbilt,3371,S4,winner
+2,Houston,3371,S2,winner
+2,Arkansas,3371,W4,winner
+2,Purdue,3371,W2,winner
+2,Alabama,3371,M4,winner
+2,Virginia,3371,M3,winner
+2,Michigan State,3371,E3,winner
+2,Illinois*,3371,S3,winner
+2,Gonzaga,3371,W3,winner
+2,Iowa State,3371,M2,winner
+2,Duke,3371,E1,winner
+2,Arizona,3371,W1,winner
+2,Florida,3371,S1,winner
+2,Michigan,3371,M1,winner
+3,Michigan State,3371,E2,winner
+3,Illinois*,3371,S2,winner
+3,Gonzaga,3371,W2,winner
+3,Iowa State,3371,M2,winner
+3,Duke,3371,E1,winner
+3,Arizona,3371,W1,winner
+3,Florida,3371,S1,winner
+3,Michigan,3371,M1,winner
+4,Duke,3371,E,winner
+4,Arizona,3371,W,winner
+4,Florida,3371,S,winner
+4,Michigan,3371,M,winner
+5,Florida,3371,1,winner
+5,Michigan,3371,2,winner
+6,Michigan,3371,final,winner

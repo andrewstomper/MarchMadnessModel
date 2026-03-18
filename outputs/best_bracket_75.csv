@@ -1,0 +1,64 @@
+round,Team,competitor,grp,type
+1,TCU,4515,E8,winner
+1,St. John's,4515,E5,winner
+1,South Florida,4515,E6,winner
+1,UCLA,4515,E7,winner
+1,Clemson,4515,S8,winner
+1,Nebraska,4515,S4,winner
+1,North Carolina,4515,S6,winner
+1,Saint Mary's,4515,S7,winner
+1,Villanova,4515,W8,winner
+1,Arkansas,4515,W4,winner
+1,Texas*,4515,W6,winner
+1,Missouri,4515,W7,winner
+1,Georgia,4515,M8,winner
+1,Alabama,4515,M4,winner
+1,SMU*,4515,M6,winner
+1,Kentucky,4515,M7,winner
+1,Kansas,4515,E4,winner
+1,Michigan State,4515,E3,winner
+1,Vanderbilt,4515,S5,winner
+1,Illinois*,4515,S3,winner
+1,Wisconsin,4515,W5,winner
+1,Gonzaga,4515,W3,winner
+1,Texas Tech,4515,M5,winner
+1,Virginia,4515,M3,winner
+1,Connecticut,4515,E2,winner
+1,Houston,4515,S2,winner
+1,Purdue,4515,W2,winner
+1,Iowa State,4515,M2,winner
+1,Duke,4515,E1,winner
+1,Arizona,4515,W1,winner
+1,Michigan,4515,M1,winner
+1,Florida,4515,S1,winner
+2,Kansas,4515,E4,winner
+2,Michigan State,4515,E3,winner
+2,Vanderbilt,4515,S4,winner
+2,Illinois*,4515,S3,winner
+2,Wisconsin,4515,W4,winner
+2,Gonzaga,4515,W3,winner
+2,Texas Tech,4515,M4,winner
+2,Virginia,4515,M3,winner
+2,Connecticut,4515,E2,winner
+2,Houston,4515,S2,winner
+2,Purdue,4515,W2,winner
+2,Iowa State,4515,M2,winner
+2,Duke,4515,E1,winner
+2,Arizona,4515,W1,winner
+2,Michigan,4515,M1,winner
+2,Florida,4515,S1,winner
+3,Connecticut,4515,E2,winner
+3,Houston,4515,S2,winner
+3,Purdue,4515,W2,winner
+3,Iowa State,4515,M2,winner
+3,Duke,4515,E1,winner
+3,Arizona,4515,W1,winner
+3,Michigan,4515,M1,winner
+3,Florida,4515,S1,winner
+4,Duke,4515,E,winner
+4,Arizona,4515,W,winner
+4,Michigan,4515,M,winner
+4,Florida,4515,S,winner
+5,Michigan,4515,2,winner
+5,Florida,4515,1,winner
+6,Florida,4515,final,winner

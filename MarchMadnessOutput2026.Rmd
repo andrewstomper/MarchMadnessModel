@@ -1043,6 +1043,550 @@ filled_bracket
 
 ```
 
+# Results (Group Size = 75)
+
+```{r results_75, echo=FALSE, include=TRUE, R.options = list(width = 240)}
+
+best_bracket <- fread('outputs/best_bracket_75.csv')
+
+expected <- fread("data/dk_26.csv")
+best_bracket[expected, TeamCln := `i.Team Clean`, on = .(Team)]
+best_bracket[, Team := TeamCln]
+
+first_evens <- function(x) {seq(from=2,to=2*x,length.out=x)}
+first_odds <- function(x) {seq(from=1,to=2*x-1,length.out=x)}
+
+### calculate y-values for horizontal lines:
+### this is for top-left corner of the bracket,
+### but multiplying sequences by -1 makes these 
+### values work for bottom right and left corners;
+### final round has teams at y=2*off.set
+
+r1.y.width <- 1.5*strheight(s="Virginia Common",units="in") # this effects the width of the first round
+r1.y.offset <- 0.125*r1.y.width # this effects distance from y=0
+
+r1.y <- seq(from=r1.y.offset,to=r1.y.offset+r1.y.width,length.out=16)
+r2.y <- seq(from=mean(r1.y[1:2]),to=mean(r1.y[15:16]),length.out=8)
+r3.y <- seq(from=mean(r2.y[1:2]),to=mean(r2.y[7:8]),length.out=4)
+r4.y <- seq(from=mean(r3.y[1:2]),to=mean(r3.y[3:4]),length.out=2)
+r5.y <- seq(from=mean(r4.y[1:2]),to=mean(r4.y[1:2]),length.out=1)
+r6.y <- 1.5*r1.y.offset
+
+### calculate horizontal bar start and stop coordinates
+### note that there are 6 total rounds -- 5 rounds per quadrant
+r1.x.width <- 1.25*strwidth("Viriginia Commonwealth","inches") # how long should horizontal lines be?
+r1.x.offset <- 1
+round.break.points <- -(seq(from=0,to=7*r1.x.width,by=r1.x.width)+r1.x.offset)
+
+r1.x <- round.break.points[7:6]
+r2.x <- round.break.points[6:5]
+r3.x <- round.break.points[5:4]
+r4.x <- round.break.points[4:3]
+r5.x <- round.break.points[3:2]
+r6.x <- round.break.points[2:1]
+
+### calculate verticals line coordinates: these are based off of
+### r1.y values. Round 5 verticals need to connect the four subtrees
+### via the top-left <-> bottom-left and top-right <-> bottom-right
+
+r1.verticals.start <- r1.y[first_odds(8)]
+r1.verticals.stop <- r1.y[first_evens(8)]
+
+r2.verticals.start <- r2.y[first_odds(4)]
+r2.verticals.stop <- r2.y[first_evens(4)]
+
+r3.verticals.start <- r3.y[first_odds(2)]
+r3.verticals.stop <- r3.y[first_evens(2)]
+
+r4.verticals.start <- r4.y[first_odds(1)]
+r4.verticals.stop <- r4.y[first_evens(1)]
+
+r5.verticals.start <- r5.y[1]
+r5.verticals.stop <- -r5.y[1]
+
+empty.bracket <- ggplot() + theme_bw() + theme(axis.line=element_blank(), axis.text.x=element_blank(), axis.text.y=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), axis.title.y=element_blank(), panel.border=element_blank(), panel.grid.major.x=element_blank(), panel.grid.minor.x=element_blank(), panel.grid.major.y=element_blank(), panel.grid.minor.y=element_blank(), plot.margin=unit(c(0,0,-6,-6),"mm"), text=element_text(size=12,hjust=0,vjust=0)) + coord_cartesian(ylim = c(-1.05*r1.y[16],1.05*r1.y[16]), xlim = c(1.025*r1.x[1],-1.025*r1.x[1]))
+
+### add first round bars, and vertical connectors, make addition of each quadrant verbose
+empty.bracket <- empty.bracket + geom_segment(aes(x=r1.x[1],y=r1.y,yend=r1.y,xend=r1.x[2])) + geom_segment(aes(x=r1.x[2],xend=r1.x[2],y=r1.verticals.start,yend=r1.verticals.stop)) + geom_segment(aes(x=r1.x[1],y=-r1.y,yend=-r1.y,xend=r1.x[2])) + geom_segment(aes(x=r1.x[2],xend=r1.x[2],y=-r1.verticals.start,yend=-r1.verticals.stop)) + geom_segment(aes(x=-r1.x[1],y=r1.y,yend=r1.y,xend=-r1.x[2])) + geom_segment(aes(x=-r1.x[2],xend=-r1.x[2],y=r1.verticals.start,yend=r1.verticals.stop)) + geom_segment(aes(x=-r1.x[1],y=-r1.y,yend=-r1.y,xend=-r1.x[2])) + geom_segment(aes(x=-r1.x[2],xend=-r1.x[2],y=-r1.verticals.start,yend=-r1.verticals.stop)) 
+
+### add second round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r2.x[1],y=r2.y,yend=r2.y,xend=r2.x[2])) + geom_segment(aes(x=r2.x[2],xend=r2.x[2],y=r2.verticals.start,yend=r2.verticals.stop)) + geom_segment(aes(x=r2.x[1],y=-r2.y,yend=-r2.y,xend=r2.x[2])) + geom_segment(aes(x=r2.x[2],xend=r2.x[2],y=-r2.verticals.start,yend=-r2.verticals.stop)) + geom_segment(aes(x=-r2.x[1],y=r2.y,yend=r2.y,xend=-r2.x[2])) + geom_segment(aes(x=-r2.x[2],xend=-r2.x[2],y=r2.verticals.start,yend=r2.verticals.stop)) + geom_segment(aes(x=-r2.x[1],y=-r2.y,yend=-r2.y,xend=-r2.x[2])) + geom_segment(aes(x=-r2.x[2],xend=-r2.x[2],y=-r2.verticals.start,yend=-r2.verticals.stop)) 
+
+### add third round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r3.x[1],y=r3.y,yend=r3.y,xend=r3.x[2])) + geom_segment(aes(x=r3.x[2],xend=r3.x[2],y=r3.verticals.start,yend=r3.verticals.stop)) + geom_segment(aes(x=r3.x[1],y=-r3.y,yend=-r3.y,xend=r3.x[2])) + geom_segment(aes(x=r3.x[2],xend=r3.x[2],y=-r3.verticals.start,yend=-r3.verticals.stop)) + geom_segment(aes(x=-r3.x[1],y=r3.y,yend=r3.y,xend=-r3.x[2])) + geom_segment(aes(x=-r3.x[2],xend=-r3.x[2],y=r3.verticals.start,yend=r3.verticals.stop)) + geom_segment(aes(x=-r3.x[1],y=-r3.y,yend=-r3.y,xend=-r3.x[2])) + geom_segment(aes(x=-r3.x[2],xend=-r3.x[2],y=-r3.verticals.start,yend=-r3.verticals.stop)) 
+
+### add fourth round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r4.x[1],y=r4.y,yend=r4.y,xend=r4.x[2])) + geom_segment(aes(x=r4.x[2],xend=r4.x[2],y=r4.verticals.start,yend=r4.verticals.stop)) + geom_segment(aes(x=r4.x[1],y=-r4.y,yend=-r4.y,xend=r4.x[2])) + geom_segment(aes(x=r4.x[2],xend=r4.x[2],y=-r4.verticals.start,yend=-r4.verticals.stop)) + geom_segment(aes(x=-r4.x[1],y=r4.y,yend=r4.y,xend=-r4.x[2])) + geom_segment(aes(x=-r4.x[2],xend=-r4.x[2],y=r4.verticals.start,yend=r4.verticals.stop)) + geom_segment(aes(x=-r4.x[1],y=-r4.y,yend=-r4.y,xend=-r4.x[2])) + geom_segment(aes(x=-r4.x[2],xend=-r4.x[2],y=-r4.verticals.start,yend=-r4.verticals.stop)) 
+
+### add fifth round: add necessary horizontal bars and then
+### vertical bars
+empty.bracket <- empty.bracket + geom_segment(aes(x=r5.x[1],y=r5.y,yend=r5.y,xend=r5.x[2])) +  geom_segment(aes(x=r5.x[1],y=-r5.y,yend=-r5.y,xend=r5.x[2])) + geom_segment(aes(x=r5.x[2],y=-r5.y, yend=r5.y, xend=r5.x[2])) + geom_segment(aes(x=-r5.x[1],y=r5.y,yend=r5.y,xend=-r5.x[2])) + geom_segment(aes(x=-r5.x[1],y=-r5.y,yend=-r5.y,xend=-r5.x[2])) + geom_segment(aes(x=-r5.x[2],y=-r5.y,yend=r5.y,xend=-r5.x[2])) 
+
+### due to symmetry, the 6th (and final round)
+empty.bracket <- empty.bracket  + geom_segment(aes(x=r6.x[1],y=r6.y,xend=r6.x[2],yend=r6.y)) + geom_segment(aes(x=-r6.x[1],y=-r6.y,xend=-r6.x[2],yend=-r6.y))
+
+### add winner location
+empty.bracket <- empty.bracket + geom_segment(aes(x=mean(r6.x),xend=-mean(r6.x),y=0,yend=0))
+
+### put some test labels on the bracket slots
+Labels_og <- c("Duke",
+               "Siena",
+               "OSU",
+               "TCU",
+               "StJohns",
+               "Northern IA",
+               "Kansas",
+               "CABaptist",
+               "Louisville",
+               "USF",
+               "MSU",
+               "NDSU",
+               "UCLA",
+               "UCF",
+               "Uconn",
+               "Furman"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+
+
+TextFrame <- data.frame(X = c(rep(r1.x[1], 16), rep(r2.x[1], 8), rep(r3.x[1], 4), rep(r4.x[1], 2), rep(r5.x[1], 1)), Y = c(rev(r1.y), rev(r2.y), rev(r3.y), rev(r4.y), rev(r5.y)), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- empty.bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=-.05,vjust=-.2)
+
+### put some test labels on the bracket slots
+Labels_og <- c("Florida",
+               "Lehigh/PV",
+               "Clemson",
+               "Iowa",
+               "Vandy",
+               "McNeese",
+               "Nebraska",
+               "Troy",
+               "UNC",
+               "VCU",
+               "Illinois",
+               "UPenn",
+               "SaintMarys",
+               "TAMU",
+               "Houston",
+               "Idaho"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+TextFrame <- data.frame(X = c(rep(r1.x[1], 16), rep(r2.x[1], 8), rep(r3.x[1], 4), rep(r4.x[1], 2), rep(r5.x[1], 1)), Y = -c(r1.y, r2.y, r3.y, r4.y, r5.y), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=-.05,vjust=-.2)
+
+
+#Top Left
+
+### put some test labels on the bracket slots
+Labels_og <- c("Arizona",
+               "LongIsland",
+               "Villanova",
+               "UtahSt",
+               "Wisconsin",
+               "HighPoint",
+               "Arkansas",
+               "Hawaii",
+               "BYU",
+               "Texas",
+               "Gonzaga",
+               "KennesawSt",
+               "MiamiFL",
+               "Missouri",
+               "Purdue",
+               "Queens"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+TextFrame <- data.frame(X = -c(rep(r1.x[2], 16), rep(r2.x[2], 8), rep(r3.x[2], 4), rep(r4.x[2], 2), rep(r5.x[2], 1)), Y = c(rev(r1.y), rev(r2.y), rev(r3.y), rev(r4.y), rev(r5.y)), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+#Bottom Right
+
+### put some test labels on the bracket slots
+Labels_og <- c("Michigan",
+               "Howard",
+               "Georgia",
+               "SLU",
+               "TTU",
+               "Akron",
+               "Alabama",
+               "Hofstra",
+               "Tennessee",
+               "SMU/MOH",
+               "Virginia",
+               "WrightSt",
+               "Kentucky",
+               "SantaClara",
+               "ISU",
+               "TennSt"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+TextFrame <- data.frame(X = -c(rep(r1.x[2], 16), rep(r2.x[2], 8), rep(r3.x[2], 4), rep(r4.x[2], 2), rep(r5.x[2], 1)), Y = -c(r1.y, r2.y, r3.y, r4.y, r5.y), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+
+#Left Semi
+semi_1 <- best_bracket[round == 5 & grp == 1, Team]
+
+TextFrame <- data.frame(X = r6.x[1], Y = r6.y, LAB = semi_1)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+#Right Semi
+semi_2 <- best_bracket[round == 5 & grp == 2, Team]
+
+TextFrame <- data.frame(X = -r6.x[2], Y = -r6.y, LAB = semi_2)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+#Final
+champ <- best_bracket[round == 6, Team]
+
+TextFrame <- data.frame(X = 0, Y = 0, LAB = champ)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0.5,vjust=-.2)
+
+filled_bracket
+
+```
+
+
+# Results (Group Size = 75; 2nd Bracket)
+
+I had the chance to submit two brackets in a 75 person pool. Using the optimal 75 person bracket as a seed competitor, I optomized for the next best bracket to win in cases that the original does not. 
+
+```{r results_75_2, echo=FALSE, include=TRUE, R.options = list(width = 240)}
+
+best_bracket <- fread('outputs/best_bracket_75_2nd_bracket.csv')
+
+expected <- fread("data/dk_26.csv")
+best_bracket[expected, TeamCln := `i.Team Clean`, on = .(Team)]
+best_bracket[, Team := TeamCln]
+
+first_evens <- function(x) {seq(from=2,to=2*x,length.out=x)}
+first_odds <- function(x) {seq(from=1,to=2*x-1,length.out=x)}
+
+### calculate y-values for horizontal lines:
+### this is for top-left corner of the bracket,
+### but multiplying sequences by -1 makes these 
+### values work for bottom right and left corners;
+### final round has teams at y=2*off.set
+
+r1.y.width <- 1.5*strheight(s="Virginia Common",units="in") # this effects the width of the first round
+r1.y.offset <- 0.125*r1.y.width # this effects distance from y=0
+
+r1.y <- seq(from=r1.y.offset,to=r1.y.offset+r1.y.width,length.out=16)
+r2.y <- seq(from=mean(r1.y[1:2]),to=mean(r1.y[15:16]),length.out=8)
+r3.y <- seq(from=mean(r2.y[1:2]),to=mean(r2.y[7:8]),length.out=4)
+r4.y <- seq(from=mean(r3.y[1:2]),to=mean(r3.y[3:4]),length.out=2)
+r5.y <- seq(from=mean(r4.y[1:2]),to=mean(r4.y[1:2]),length.out=1)
+r6.y <- 1.5*r1.y.offset
+
+### calculate horizontal bar start and stop coordinates
+### note that there are 6 total rounds -- 5 rounds per quadrant
+r1.x.width <- 1.25*strwidth("Viriginia Commonwealth","inches") # how long should horizontal lines be?
+r1.x.offset <- 1
+round.break.points <- -(seq(from=0,to=7*r1.x.width,by=r1.x.width)+r1.x.offset)
+
+r1.x <- round.break.points[7:6]
+r2.x <- round.break.points[6:5]
+r3.x <- round.break.points[5:4]
+r4.x <- round.break.points[4:3]
+r5.x <- round.break.points[3:2]
+r6.x <- round.break.points[2:1]
+
+### calculate verticals line coordinates: these are based off of
+### r1.y values. Round 5 verticals need to connect the four subtrees
+### via the top-left <-> bottom-left and top-right <-> bottom-right
+
+r1.verticals.start <- r1.y[first_odds(8)]
+r1.verticals.stop <- r1.y[first_evens(8)]
+
+r2.verticals.start <- r2.y[first_odds(4)]
+r2.verticals.stop <- r2.y[first_evens(4)]
+
+r3.verticals.start <- r3.y[first_odds(2)]
+r3.verticals.stop <- r3.y[first_evens(2)]
+
+r4.verticals.start <- r4.y[first_odds(1)]
+r4.verticals.stop <- r4.y[first_evens(1)]
+
+r5.verticals.start <- r5.y[1]
+r5.verticals.stop <- -r5.y[1]
+
+empty.bracket <- ggplot() + theme_bw() + theme(axis.line=element_blank(), axis.text.x=element_blank(), axis.text.y=element_blank(), axis.ticks=element_blank(), axis.title.x=element_blank(), axis.title.y=element_blank(), panel.border=element_blank(), panel.grid.major.x=element_blank(), panel.grid.minor.x=element_blank(), panel.grid.major.y=element_blank(), panel.grid.minor.y=element_blank(), plot.margin=unit(c(0,0,-6,-6),"mm"), text=element_text(size=12,hjust=0,vjust=0)) + coord_cartesian(ylim = c(-1.05*r1.y[16],1.05*r1.y[16]), xlim = c(1.025*r1.x[1],-1.025*r1.x[1]))
+
+### add first round bars, and vertical connectors, make addition of each quadrant verbose
+empty.bracket <- empty.bracket + geom_segment(aes(x=r1.x[1],y=r1.y,yend=r1.y,xend=r1.x[2])) + geom_segment(aes(x=r1.x[2],xend=r1.x[2],y=r1.verticals.start,yend=r1.verticals.stop)) + geom_segment(aes(x=r1.x[1],y=-r1.y,yend=-r1.y,xend=r1.x[2])) + geom_segment(aes(x=r1.x[2],xend=r1.x[2],y=-r1.verticals.start,yend=-r1.verticals.stop)) + geom_segment(aes(x=-r1.x[1],y=r1.y,yend=r1.y,xend=-r1.x[2])) + geom_segment(aes(x=-r1.x[2],xend=-r1.x[2],y=r1.verticals.start,yend=r1.verticals.stop)) + geom_segment(aes(x=-r1.x[1],y=-r1.y,yend=-r1.y,xend=-r1.x[2])) + geom_segment(aes(x=-r1.x[2],xend=-r1.x[2],y=-r1.verticals.start,yend=-r1.verticals.stop)) 
+
+### add second round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r2.x[1],y=r2.y,yend=r2.y,xend=r2.x[2])) + geom_segment(aes(x=r2.x[2],xend=r2.x[2],y=r2.verticals.start,yend=r2.verticals.stop)) + geom_segment(aes(x=r2.x[1],y=-r2.y,yend=-r2.y,xend=r2.x[2])) + geom_segment(aes(x=r2.x[2],xend=r2.x[2],y=-r2.verticals.start,yend=-r2.verticals.stop)) + geom_segment(aes(x=-r2.x[1],y=r2.y,yend=r2.y,xend=-r2.x[2])) + geom_segment(aes(x=-r2.x[2],xend=-r2.x[2],y=r2.verticals.start,yend=r2.verticals.stop)) + geom_segment(aes(x=-r2.x[1],y=-r2.y,yend=-r2.y,xend=-r2.x[2])) + geom_segment(aes(x=-r2.x[2],xend=-r2.x[2],y=-r2.verticals.start,yend=-r2.verticals.stop)) 
+
+### add third round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r3.x[1],y=r3.y,yend=r3.y,xend=r3.x[2])) + geom_segment(aes(x=r3.x[2],xend=r3.x[2],y=r3.verticals.start,yend=r3.verticals.stop)) + geom_segment(aes(x=r3.x[1],y=-r3.y,yend=-r3.y,xend=r3.x[2])) + geom_segment(aes(x=r3.x[2],xend=r3.x[2],y=-r3.verticals.start,yend=-r3.verticals.stop)) + geom_segment(aes(x=-r3.x[1],y=r3.y,yend=r3.y,xend=-r3.x[2])) + geom_segment(aes(x=-r3.x[2],xend=-r3.x[2],y=r3.verticals.start,yend=r3.verticals.stop)) + geom_segment(aes(x=-r3.x[1],y=-r3.y,yend=-r3.y,xend=-r3.x[2])) + geom_segment(aes(x=-r3.x[2],xend=-r3.x[2],y=-r3.verticals.start,yend=-r3.verticals.stop)) 
+
+### add fourth round
+empty.bracket <- empty.bracket + geom_segment(aes(x=r4.x[1],y=r4.y,yend=r4.y,xend=r4.x[2])) + geom_segment(aes(x=r4.x[2],xend=r4.x[2],y=r4.verticals.start,yend=r4.verticals.stop)) + geom_segment(aes(x=r4.x[1],y=-r4.y,yend=-r4.y,xend=r4.x[2])) + geom_segment(aes(x=r4.x[2],xend=r4.x[2],y=-r4.verticals.start,yend=-r4.verticals.stop)) + geom_segment(aes(x=-r4.x[1],y=r4.y,yend=r4.y,xend=-r4.x[2])) + geom_segment(aes(x=-r4.x[2],xend=-r4.x[2],y=r4.verticals.start,yend=r4.verticals.stop)) + geom_segment(aes(x=-r4.x[1],y=-r4.y,yend=-r4.y,xend=-r4.x[2])) + geom_segment(aes(x=-r4.x[2],xend=-r4.x[2],y=-r4.verticals.start,yend=-r4.verticals.stop)) 
+
+### add fifth round: add necessary horizontal bars and then
+### vertical bars
+empty.bracket <- empty.bracket + geom_segment(aes(x=r5.x[1],y=r5.y,yend=r5.y,xend=r5.x[2])) +  geom_segment(aes(x=r5.x[1],y=-r5.y,yend=-r5.y,xend=r5.x[2])) + geom_segment(aes(x=r5.x[2],y=-r5.y, yend=r5.y, xend=r5.x[2])) + geom_segment(aes(x=-r5.x[1],y=r5.y,yend=r5.y,xend=-r5.x[2])) + geom_segment(aes(x=-r5.x[1],y=-r5.y,yend=-r5.y,xend=-r5.x[2])) + geom_segment(aes(x=-r5.x[2],y=-r5.y,yend=r5.y,xend=-r5.x[2])) 
+
+### due to symmetry, the 6th (and final round)
+empty.bracket <- empty.bracket  + geom_segment(aes(x=r6.x[1],y=r6.y,xend=r6.x[2],yend=r6.y)) + geom_segment(aes(x=-r6.x[1],y=-r6.y,xend=-r6.x[2],yend=-r6.y))
+
+### add winner location
+empty.bracket <- empty.bracket + geom_segment(aes(x=mean(r6.x),xend=-mean(r6.x),y=0,yend=0))
+
+### put some test labels on the bracket slots
+Labels_og <- c("Duke",
+               "Siena",
+               "OSU",
+               "TCU",
+               "StJohns",
+               "Northern IA",
+               "Kansas",
+               "CABaptist",
+               "Louisville",
+               "USF",
+               "MSU",
+               "NDSU",
+               "UCLA",
+               "UCF",
+               "Uconn",
+               "Furman"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'E', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+
+
+TextFrame <- data.frame(X = c(rep(r1.x[1], 16), rep(r2.x[1], 8), rep(r3.x[1], 4), rep(r4.x[1], 2), rep(r5.x[1], 1)), Y = c(rev(r1.y), rev(r2.y), rev(r3.y), rev(r4.y), rev(r5.y)), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- empty.bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=-.05,vjust=-.2)
+
+### put some test labels on the bracket slots
+Labels_og <- c("Florida",
+               "Lehigh/PV",
+               "Clemson",
+               "Iowa",
+               "Vandy",
+               "McNeese",
+               "Nebraska",
+               "Troy",
+               "UNC",
+               "VCU",
+               "Illinois",
+               "UPenn",
+               "SaintMarys",
+               "TAMU",
+               "Houston",
+               "Idaho"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'S', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+TextFrame <- data.frame(X = c(rep(r1.x[1], 16), rep(r2.x[1], 8), rep(r3.x[1], 4), rep(r4.x[1], 2), rep(r5.x[1], 1)), Y = -c(r1.y, r2.y, r3.y, r4.y, r5.y), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=-.05,vjust=-.2)
+
+
+#Top Left
+
+### put some test labels on the bracket slots
+Labels_og <- c("Arizona",
+               "LongIsland",
+               "Villanova",
+               "UtahSt",
+               "Wisconsin",
+               "HighPoint",
+               "Arkansas",
+               "Hawaii",
+               "BYU",
+               "Texas",
+               "Gonzaga",
+               "KennesawSt",
+               "MiamiFL",
+               "Missouri",
+               "Purdue",
+               "Queens"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'W', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+TextFrame <- data.frame(X = -c(rep(r1.x[2], 16), rep(r2.x[2], 8), rep(r3.x[2], 4), rep(r4.x[2], 2), rep(r5.x[2], 1)), Y = c(rev(r1.y), rev(r2.y), rev(r3.y), rev(r4.y), rev(r5.y)), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+#Bottom Right
+
+### put some test labels on the bracket slots
+Labels_og <- c("Michigan",
+               "Howard",
+               "Georgia",
+               "SLU",
+               "TTU",
+               "Akron",
+               "Alabama",
+               "Hofstra",
+               "Tennessee",
+               "SMU/MOH",
+               "Virginia",
+               "WrightSt",
+               "Kentucky",
+               "SantaClara",
+               "ISU",
+               "TennSt"
+)
+Labels <- Labels_og
+vec <- best_bracket[round == 1 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 2 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 3 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+vec <- best_bracket[round == 4 & grp %like% 'M', Team]
+Labels %<>% c(vec[order(match(vec, Labels_og))])
+
+TextFrame <- data.frame(X = -c(rep(r1.x[2], 16), rep(r2.x[2], 8), rep(r3.x[2], 4), rep(r4.x[2], 2), rep(r5.x[2], 1)), Y = -c(r1.y, r2.y, r3.y, r4.y, r5.y), LAB = Labels)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+
+#Left Semi
+semi_1 <- best_bracket[round == 5 & grp == 1, Team]
+
+TextFrame <- data.frame(X = r6.x[1], Y = r6.y, LAB = semi_1)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+#Right Semi
+semi_2 <- best_bracket[round == 5 & grp == 2, Team]
+
+TextFrame <- data.frame(X = -r6.x[2], Y = -r6.y, LAB = semi_2)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0,vjust=-.2)
+
+#Final
+champ <- best_bracket[round == 6, Team]
+
+TextFrame <- data.frame(X = 0, Y = 0, LAB = champ)
+TextFrame <- transform(TextFrame, w = strwidth(LAB, 'inches') + 0.05, h = strheight(LAB, 'inches') + 0.5)
+
+### display results
+filled_bracket <- filled_bracket + geom_rect(data = TextFrame, aes(xmin = X, xmax = X + w, ymin = Y, ymax = Y + h),alpha=0) + geom_text(data=TextFrame,aes(x=X,y=Y,label=LAB),size=rel(3),hjust=0.5,vjust=-.2)
+
+filled_bracket
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

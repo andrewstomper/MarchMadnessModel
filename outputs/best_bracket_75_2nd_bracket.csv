@@ -1,0 +1,64 @@
+round,Team,competitor,grp,type
+1,TCU,1605,E8,winner
+1,Kansas,1605,E4,winner
+1,Louisville,1605,E6,winner
+1,UCLA,1605,E7,winner
+1,Iowa,1605,S8,winner
+1,Nebraska,1605,S4,winner
+1,North Carolina,1605,S6,winner
+1,Saint Mary's,1605,S7,winner
+1,Villanova,1605,W8,winner
+1,Wisconsin,1605,W5,winner
+1,Texas*,1605,W6,winner
+1,Miami (Fla.),1605,W7,winner
+1,Saint Louis,1605,M8,winner
+1,Akron,1605,M5,winner
+1,Virginia,1605,M3,winner
+1,Kentucky,1605,M7,winner
+1,St. John's,1605,E5,winner
+1,Connecticut,1605,E2,winner
+1,Vanderbilt,1605,S5,winner
+1,Houston,1605,S2,winner
+1,Arkansas,1605,W4,winner
+1,Purdue,1605,W2,winner
+1,Alabama,1605,M4,winner
+1,Tennessee,1605,M6,winner
+1,Michigan State,1605,E3,winner
+1,Illinois*,1605,S3,winner
+1,Gonzaga,1605,W3,winner
+1,Iowa State,1605,M2,winner
+1,Florida,1605,S1,winner
+1,Arizona,1605,W1,winner
+1,Duke,1605,E1,winner
+1,Michigan,1605,M1,winner
+2,St. John's,1605,E4,winner
+2,Connecticut,1605,E2,winner
+2,Vanderbilt,1605,S4,winner
+2,Houston,1605,S2,winner
+2,Arkansas,1605,W4,winner
+2,Purdue,1605,W2,winner
+2,Alabama,1605,M4,winner
+2,Tennessee,1605,M3,winner
+2,Michigan State,1605,E3,winner
+2,Illinois*,1605,S3,winner
+2,Gonzaga,1605,W3,winner
+2,Iowa State,1605,M2,winner
+2,Florida,1605,S1,winner
+2,Arizona,1605,W1,winner
+2,Duke,1605,E1,winner
+2,Michigan,1605,M1,winner
+3,Michigan State,1605,E2,winner
+3,Illinois*,1605,S2,winner
+3,Gonzaga,1605,W2,winner
+3,Iowa State,1605,M2,winner
+3,Florida,1605,S1,winner
+3,Arizona,1605,W1,winner
+3,Duke,1605,E1,winner
+3,Michigan,1605,M1,winner
+4,Florida,1605,S,winner
+4,Arizona,1605,W,winner
+4,Duke,1605,E,winner
+4,Michigan,1605,M,winner
+5,Duke,1605,1,winner
+5,Michigan,1605,2,winner
+6,Michigan,1605,final,winner
