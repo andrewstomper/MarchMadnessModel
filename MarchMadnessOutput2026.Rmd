@@ -1046,6 +1046,8 @@ filled_bracket
 # Results (Group Size = 75)
 I had the chance to submit four brackets in a 75 person pool. Using the optimal 75 person bracket as a seed competitor, I optomized for the next best bracket to win in cases that the original does not. I did this iteratively with 1, 2, and 3 seed brackets to create the 4 that have the combined best chance to win. 
 
+These four brackets combine an for an expected win percentage of 13.2% in a 79 person pool. That is roughly 8.1% above expected value.
+
 ```{r results_75, echo=FALSE, include=TRUE, R.options = list(width = 240)}
 
 best_bracket <- fread('outputs/best_bracket_75.csv')
