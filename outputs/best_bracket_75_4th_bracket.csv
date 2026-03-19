@@ -1,0 +1,64 @@
+round,Team,competitor,grp,type
+1,TCU,4065,E8,winner
+1,Kansas,4065,E4,winner
+1,Michigan State,4065,E3,winner
+1,UCLA,4065,E7,winner
+1,Iowa,4065,S8,winner
+1,Vanderbilt,4065,S5,winner
+1,North Carolina,4065,S6,winner
+1,Texas A&M,4065,S7,winner
+1,Villanova,4065,W8,winner
+1,Hawaii,4065,W4,winner
+1,BYU,4065,W6,winner
+1,Miami (Fla.),4065,W7,winner
+1,Georgia,4065,M8,winner
+1,Texas Tech,4065,M5,winner
+1,Tennessee,4065,M6,winner
+1,Kentucky,4065,M7,winner
+1,Duke,4065,E1,winner
+1,Connecticut,4065,E2,winner
+1,Nebraska,4065,S4,winner
+1,Houston,4065,S2,winner
+1,Wisconsin,4065,W5,winner
+1,Purdue,4065,W2,winner
+1,Alabama,4065,M4,winner
+1,Virginia,4065,M3,winner
+1,Louisville,4065,E6,winner
+1,Illinois*,4065,S3,winner
+1,Gonzaga,4065,W3,winner
+1,Iowa State,4065,M2,winner
+1,St. John's,4065,E5,winner
+1,Arizona,4065,W1,winner
+1,Florida,4065,S1,winner
+1,Michigan,4065,M1,winner
+2,Duke,4065,E1,winner
+2,Connecticut,4065,E2,winner
+2,Nebraska,4065,S4,winner
+2,Houston,4065,S2,winner
+2,Wisconsin,4065,W4,winner
+2,Purdue,4065,W2,winner
+2,Alabama,4065,M4,winner
+2,Virginia,4065,M3,winner
+2,Louisville,4065,E3,winner
+2,Illinois*,4065,S3,winner
+2,Gonzaga,4065,W3,winner
+2,Iowa State,4065,M2,winner
+2,St. John's,4065,E4,winner
+2,Arizona,4065,W1,winner
+2,Florida,4065,S1,winner
+2,Michigan,4065,M1,winner
+3,Louisville,4065,E2,winner
+3,Illinois*,4065,S2,winner
+3,Gonzaga,4065,W2,winner
+3,Iowa State,4065,M2,winner
+3,St. John's,4065,E1,winner
+3,Arizona,4065,W1,winner
+3,Florida,4065,S1,winner
+3,Michigan,4065,M1,winner
+4,St. John's,4065,E,winner
+4,Arizona,4065,W,winner
+4,Florida,4065,S,winner
+4,Michigan,4065,M,winner
+5,Florida,4065,1,winner
+5,Michigan,4065,2,winner
+6,Michigan,4065,final,winner
